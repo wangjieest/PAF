@@ -42,8 +42,11 @@ with PAF, we need only three line noninvasive
 
 wherever needed (cross-source/cross-module), we just need to include the interface file for foo_i. (consistent with the interface usage scenario, no additional actions are required).
 
-this is magic show time, which creates local objects with parameter.
+this is magic show time, which creates local objects with parameter. 
 
+    // just include the interface file and use it as below
+    // you need not know where the implementation file was, it will be in another module, or a pluginable module.
+    #include "foo_i.h" 
     auto obj = CREATE_OBJECT(foo_i, 42); // std::shared_ptr<foo_i>
     printf("%d", obj->bar()); // 43
 
@@ -65,7 +68,8 @@ of course, it also supports the creation of singleton objects:
 singleton will be destroyed manually or by factory with same order as statics. 
 it is more flexible and controllable than the general static singleton.
 
-in addition, a more secure pattern is implemented than a single case control: global Shared objects.
+in addition, a more secure pattern is implemented than a single case control: global shared objects. 
+usually as parent of sub objects. to break circle reference and parameter passing to subs.
 
     REG_INTERFACE_SHARED(InterfaceName, ParameterTypeList...)
     // return a smart pointer
