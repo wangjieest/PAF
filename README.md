@@ -20,7 +20,7 @@ I have a interface and it‘s implemented as below, with a method bar:
     }
 
 
-with PAF, we need only three line noninvasive
+with PAF, we need only three line noninvasive code
 
     // interface file
     class foo_i {
