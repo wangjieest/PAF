@@ -2,7 +2,7 @@
 
 let's look at a simple usage 
 
-I have a interface and it‘s implication，with a method bar：
+I have a interface and it‘s implemented as below, with a method bar:
 
     // interface file
     class foo_i {
@@ -20,7 +20,7 @@ I have a interface and it‘s implication，with a method bar：
     }
 
 
-with PAF , we need only three line noninvasive
+with PAF, we need only three line noninvasive
 
     // interface file
     class foo_i {
@@ -40,32 +40,32 @@ with PAF , we need only three line noninvasive
     // Associate the interface with the corresponding implementation class
     REG_FACTORY_OBJECT(foo_i, foo);    
 
-Wherever needed (cross-source/cross-module), we just need to include the interface file for foo_i. (consistent with the interface usage scenario, no additional actions are required).
+wherever needed (cross-source/cross-module), we just need to include the interface file for foo_i. (consistent with the interface usage scenario, no additional actions are required).
 
-This is magic show time, which creates local objects with parameter.
+this is magic show time, which creates local objects with parameter.
 
     auto obj = CREATE_OBJECT(foo_i, 42); // std::shared_ptr<foo_i>
     printf("%d", obj->bar()); // 43
 
-The whole process can also rely on the compiler to check for errors. Objects created through factories are naturally smart Pointers.
+the whole process can also rely on the compiler to check for errors. objects created through factories are naturally smart pointers.
 
-Of course, it also supports the creation of singleton objects:
+of course, it also supports the creation of singleton objects:
 
     // ParameterTypeList is a list of types for the interface implementation class constructor.
     REG_INTERFACE_SINGLTETON(InterfaceName, ParameterTypeList...)
     or 
     REG_INTERFACE_STATIC(InterfaceName, ParameterTypeList...)
-    // Thread-safe
+    // thread-safe as static
     auto * inc = GET_SINGLETON(InterfaceName, ParameterTypeList...);
-    // Gets only
+    // gets only
     auto * inc = GET_SINGLETON2(InterfaceName);
     // Destruction of the singleton
     DESTROY_SINGLETON(InterfaceName);
 
-Singleton will be destroyed manually or by factory with same order as statics. 
-It is more flexible and controllable than the general static singleton.
+singleton will be destroyed manually or by factory with same order as statics. 
+it is more flexible and controllable than the general static singleton.
 
-In addition, a more secure pattern is implemented than a single case control: global Shared objects.
+in addition, a more secure pattern is implemented than a single case control: global Shared objects.
 
     REG_INTERFACE_SHARED(InterfaceName, ParameterTypeList...)
     // return a smart pointer
@@ -73,8 +73,9 @@ In addition, a more secure pattern is implemented than a single case control: gl
     auto inc = GET_SHARED(InterfaceName, ParameterTypeList...); 
     // gets only
     auto * inc = GET_SHARED2(InterfaceName);
-    // When all the smart Pointers holding the interface are destroyed, the global Shared object is destroyed automatically
+    // when all the smart pointers holding the interface are destroyed, 
+    // the global shared object is destroyed automatically
 
-In particular, global Shared objects can be shared across modules, based on the base layer of the abstract factory. Shared objects are destroyed only when all module references are destroyed.
+in particular, global shared objects can be shared across modules, based on the base layer of the abstract factory. shared objects are destroyed only when all module references are destroyed.
 
-Based on the above features, you can also support elegant, leak-free exits. Perform leak and circular reference checks during release.
+based on the above features, you can also support elegant, leak-free exits. Perform leak and circular reference checks during release.
