@@ -1,3 +1,5 @@
+#PAF Pluginable Abstract Factory
+
 let's look at a simple usage 
 
 I have a interface and it‘s implication，with a method bar：
@@ -35,7 +37,8 @@ with PAF , we need only three line noninvasive
       virtual int bar() override {return ++value;}
       int value;
     }
-    REG_FACTORY_OBJECT(foo_i, foo);    // Associate the interface with the corresponding implementation class
+    // Associate the interface with the corresponding implementation class
+    REG_FACTORY_OBJECT(foo_i, foo);    
 
 Wherever needed (cross-source/cross-module), we just need to include the interface file for foo_i. (consistent with the interface usage scenario, no additional actions are required).
 
@@ -48,7 +51,7 @@ The whole process can also rely on the compiler to check for errors. Objects cre
 
 Of course, it also supports the creation of singleton objects:
 
-    // parameter type list is a list of the parameter types of the interface implementation class constructor.
+    // ParameterTypeList is a list of types for the interface implementation class constructor.
     REG_INTERFACE_SINGLTETON(InterfaceName, ParameterTypeList...)
     or 
     REG_INTERFACE_STATIC(InterfaceName, ParameterTypeList...)
@@ -65,9 +68,10 @@ It is more flexible and controllable than the general static singleton.
 In addition, a more secure pattern is implemented than a single case control: global Shared objects.
 
     REG_INTERFACE_SHARED(InterfaceName, ParameterTypeList...)
-    // Return a smart pointer, holding the interface smart pointer can ensure that the interface is not destroyed
+    // return a smart pointer
+    // holding the interface smart pointer can ensure that the interface is not destroyed
     auto inc = GET_SHARED(InterfaceName, ParameterTypeList...); 
-    // Gets only
+    // gets only
     auto * inc = GET_SHARED2(InterfaceName);
     // When all the smart Pointers holding the interface are destroyed, the global Shared object is destroyed automatically
 
